@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite" preserve-order="false" parallel="tests">
+	<test name="Test" preserve-order="false" parallel="false">
+		<packages>
+			<package name="com.ash2k.example.cassandra_it.it" />
+		</packages>
+	</test>
+</suite>
