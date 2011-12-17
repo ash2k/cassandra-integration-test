@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.0.0</version>
+			<version>[1.0.0,)</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>[6.3,6.4)</version>
+			<version>[6.3,)</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>1.8.5</version>
+			<version>[1.8.5,)</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
