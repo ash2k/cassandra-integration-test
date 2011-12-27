@@ -22,7 +22,10 @@ public class CassandraIT {
 
 	public static final String CLUSTER = "Test Cluster";
 	public static final String KEYSPACE = "Keyspace_test";
-	public static final String HOST = "localhost:9160";
+	public static final String HOST = System
+			.getProperty("cassandra.listenAddress")
+			+ ':'
+			+ System.getProperty("cassandra.rpcPort");
 
 	private static final Logger log = LoggerFactory
 			.getLogger(CassandraIT.class);
@@ -32,8 +35,7 @@ public class CassandraIT {
 		log.info("Creating keyspace \"{}\" in cluster \"{}\"", KEYSPACE,
 				CLUSTER);
 
-		Cluster cluster = HFactory
-				.getOrCreateCluster(CLUSTER, HOST);
+		Cluster cluster = HFactory.getOrCreateCluster(CLUSTER, HOST);
 		List<ColumnFamilyDefinition> cfDefs = Collections.emptyList();
 		KeyspaceDefinition newKeyspace = HFactory.createKeyspaceDefinition(
 				KEYSPACE, ThriftKsDef.DEF_STRATEGY_CLASS, 1, cfDefs);

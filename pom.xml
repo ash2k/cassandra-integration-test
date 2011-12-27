@@ -4,7 +4,7 @@
 
 	<groupId>com.ash2k.example</groupId>
 	<artifactId>cassandra-integration-test</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 
 	<name>cassandra-integration-test</name>
 	<url>https://github.com/ash2k/cassandra-integration-test</url>
@@ -12,6 +12,7 @@
 	<properties>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<cassandra.listenAddress>127.0.0.1</cassandra.listenAddress>
 	</properties>
 
 	<scm>
@@ -60,7 +61,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>[1.8.5,)</version>
+			<version>[1.9.0,)</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -79,31 +80,66 @@
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>reserve-network-port</goal>
+						</goals>
+						<phase>pre-integration-test</phase>
+						<configuration>
+							<portNames>
+								<portName>cassandra.jmxPort</portName>
+								<portName>cassandra.rpcPort</portName>
+								<portName>cassandra.stopPort</portName>
+								<portName>cassandra.storagePort</portName>
+							</portNames>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cassandra-maven-plugin</artifactId>
 				<version>1.0.0-1</version>
 				<executions>
 					<execution>
-						<goals>
-							<goal>start</goal>
-							<goal>stop</goal>
-						</goals>
-						<configuration>
-							<listenAddress>127.0.0.1</listenAddress>
-						</configuration>
-					</execution>
-					<execution>
 						<id>delete-cassandra</id>
-						<phase>package</phase>
+						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>delete</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>start-cassandra</id>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<listenAddress>${cassandra.listenAddress}</listenAddress>
+							<jmxPort>${cassandra.jmxPort}</jmxPort>
+							<rpcPort>${cassandra.rpcPort}</rpcPort>
+							<stopPort>${cassandra.stopPort}</stopPort>
+							<storagePort>${cassandra.storagePort}</storagePort>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stop-cassandra</id>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+						<configuration>
+							<listenAddress>${cassandra.listenAddress}</listenAddress>
+							<stopPort>${cassandra.stopPort}</stopPort>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.5.4.201111111111</version>
+				<version>0.5.5.201112152213</version>
 				<executions>
 					<execution>
 						<id>prepare-test-agent</id>
@@ -166,6 +202,10 @@
 							<suiteXmlFiles>
 								<suiteXmlFile>testngIT.xml</suiteXmlFile>
 							</suiteXmlFiles>
+							<systemPropertyVariables>
+								<cassandra.listenAddress>${cassandra.listenAddress}</cassandra.listenAddress>
+								<cassandra.rpcPort>${cassandra.rpcPort}</cassandra.rpcPort>
+							</systemPropertyVariables>
 						</configuration>
 					</execution>
 					<execution>
@@ -192,7 +232,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.jacoco</groupId>
 										<artifactId>jacoco-maven-plugin</artifactId>
-										<versionRange>[0.5.4.201111111111,)</versionRange>
+										<versionRange>[0.1,)</versionRange>
 										<goals>
 											<goal>prepare-agent</goal>
 										</goals>
